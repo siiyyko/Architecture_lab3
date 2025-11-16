@@ -93,6 +93,13 @@ const TaskModal = ({ task, onClose, onSave, usersMap, currentUser }) => {
                 <label>Reporter</label>
                 <p>{usersMap.get(formData.reporterId) || 'Unknown'}</p>
               </div>
+
+              {!isNew && (
+                <div className='task-detail'>
+                  <label>Last Updated: </label>
+                  <p>{new Date(formData.lastUpdated).toLocaleString()}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
