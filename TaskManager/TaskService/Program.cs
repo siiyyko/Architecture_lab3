@@ -42,6 +42,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<TaskService.Services.MessageBusConsumer>();
 
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<TaskService.Data.TaskServiceContext>(); 
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            Console.WriteLine("--> Applying EF Core Migrations...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("--> Migrations Applied.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"--> An error occurred while applying migrations: {ex.Message}");
+    }
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

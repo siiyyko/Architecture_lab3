@@ -40,6 +40,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<UserService.Data.UserServiceContext>(); 
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            Console.WriteLine("--> Applying EF Core Migrations...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("--> Migrations Applied.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"--> An error occurred while applying migrations: {ex.Message}");
+    }
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

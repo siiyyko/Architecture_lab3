@@ -45,6 +45,25 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMessageBusPublisher, MessageBusPublisher>();
 builder.Services.AddHttpClient();
 
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<CommunicationService.Data.CommunicationServiceContext>(); 
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            Console.WriteLine("--> Applying EF Core Migrations...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("--> Migrations Applied.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"--> An error occurred while applying migrations: {ex.Message}");
+    }
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
