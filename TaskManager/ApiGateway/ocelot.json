@@ -6,8 +6,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "communicationservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "GET", "POST" ]
@@ -18,8 +18,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "taskservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "PATCH" ]
@@ -29,8 +29,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "taskservice",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/tasks",
@@ -42,8 +42,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "taskservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
@@ -54,8 +54,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "userservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "POST" ]
@@ -66,8 +66,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "userservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "POST" ]
@@ -78,8 +78,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "userservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "GET" ]
@@ -90,8 +90,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "communicationservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "POST" ]
@@ -102,8 +102,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "communicationservice",
+          "Port": 8080
         }
       ],
       "UpstreamHttpMethod": [ "POST" ]

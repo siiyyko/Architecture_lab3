@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CommunicationServiceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CommunicationServiceContext") ?? throw new InvalidOperationException("Connection string 'CommunicationServiceContext' not found.")));
 
+var otlpEndpoint = builder.Configuration["OTLP_ENDPOINT_URL"] ?? "http://localhost:4317";
+
 // Add services to the container.
 
 var serviceName = "CommunicationService";
@@ -27,7 +29,7 @@ builder.Services.AddOpenTelemetry()
 
             .AddOtlpExporter(opts =>
             {
-                opts.Endpoint = new Uri("http://localhost:4317");
+                opts.Endpoint = new Uri(otlpEndpoint);
                 opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
             })
 

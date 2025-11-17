@@ -6,6 +6,8 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var otlpEndpoint = builder.Configuration["OTLP_ENDPOINT_URL"] ?? "http://localhost:4317";
+
 var allowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
@@ -27,10 +29,10 @@ builder.Services.AddOpenTelemetry()
                 ResourceBuilder.CreateDefault()
                     .AddService(serviceName: serviceName))
             .AddAspNetCoreInstrumentation()
-            .AddConsoleExporter()
+            .AddConsoleExporter()   
             .AddOtlpExporter(opts =>
             {
-                opts.Endpoint = new Uri("http://localhost:4317");
+                opts.Endpoint = new Uri(otlpEndpoint);
                 opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
             })
     );

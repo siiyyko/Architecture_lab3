@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TaskServiceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskServiceContext") ?? throw new InvalidOperationException("Connection string 'TaskServiceContext' not found.")));
 
+var otlpEndpoint = builder.Configuration["OTLP_ENDPOINT_URL"] ?? "http://localhost:4317";
+
 // Add services to the container.
 
 var serviceName = "TaskService";
@@ -26,7 +28,7 @@ builder.Services.AddOpenTelemetry()
 
             .AddOtlpExporter(opts =>
             {
-                opts.Endpoint = new Uri("http://localhost:4317");
+                opts.Endpoint = new Uri(otlpEndpoint);
                 opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
             })
 

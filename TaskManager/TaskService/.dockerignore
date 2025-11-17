@@ -1,0 +1,10 @@
+﻿**/bin/
+**/obj/
+
+Dockerfile*
+DockerfileUnoptimized
+Dockerfile
+DockerfileOptimized
+
+.git/
+.vscode/
