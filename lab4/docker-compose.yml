@@ -1,0 +1,106 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: always
+
+  sqlserver-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=!Abcd1234
+    ports:
+      - "1433:1433"
+    restart: always
+
+  userservice:
+    # image: userservice:optimized
+    build: ../lab3/TaskManager/UserService
+    container_name: userservice
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP_ENDPOINT_URL=http://jaeger:4317
+      - ConnectionStrings__DefaultConnection=Server=sqlserver-db,1433;Database=UserDb;User Id=sa;Password=!Abcd1234;TrustServerCertificate=True
+    depends_on:
+      - jaeger
+      - sqlserver-db
+    restart: always
+
+  taskservice:
+    # image: taskservice:optimized
+    build: ../lab3/TaskManager/TaskService
+    container_name: taskservice
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP_ENDPOINT_URL=http://jaeger:4317
+      - RabbitMQHost=rabbitmq
+      - RabbitMQPort=5672
+      - ConnectionStrings__DefaultConnection=Server=sqlserver-db,1433;Database=TaskDb;User Id=sa;Password=!Abcd1234;TrustServerCertificate=True
+    depends_on:
+      - rabbitmq
+      - sqlserver-db
+    restart: always
+
+  communicationservice:
+    # image: communicationservice:optimized
+    build: ../lab3/TaskManager/CommunicationService
+    container_name: communicationservice
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP_ENDPOINT_URL=http://jaeger:4317
+      - RabbitMQHost=rabbitmq
+      - RabbitMQPort=5672
+      - ConnectionStrings__DefaultConnection=Server=sqlserver-db,1433;Database=CommunicationDb;User Id=sa;Password=!Abcd1234;TrustServerCertificate=True
+    depends_on:
+      - rabbitmq
+      - sqlserver-db
+    restart: always
+
+  apigateway:
+    # image: apigateway:optimized
+    build: ../lab3/TaskManager/ApiGateway
+    container_name: apigateway
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP_ENDPOINT_URL=http://jaeger:4317
+    depends_on:
+      - userservice
+      - taskservice
+      - communicationservice
+    restart: always
+
+  react-client:
+    # image: react-client:optimized
+    build: ../lab3/TaskManagerFront
+    container_name: react-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - apigateway
+    restart: always
